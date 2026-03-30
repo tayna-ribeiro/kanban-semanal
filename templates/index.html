@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planejamento Semanal - Kanban</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+            --into-color: #3498db;
+            --jbrj-color: #2ecc71;
+            --outros-color: #95a5a6;
+            --border: #e2e8f0;
+            --todo-bg: #e2e8f0;
+            --doing-bg: #fef08a;
+            --done-bg: #bbf7d0;
+
+            /* Aviso Board */
+            --notice-bg: #1e293b;
+            --notice-card-bg: #283548;
+            --notice-header: #f8fafc;
+            --notice-accent-deploy: #f59e0b;
+            --notice-accent-pessoal: #a78bfa;
+            --notice-accent-login: #34d399;
+            --notice-accent-ferias: #fb7185;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* ==================== NOTICE BOARD ==================== */
+        .notice-board-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .notice-toggle-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--notice-bg);
+            color: var(--notice-header);
+            padding: 12px 20px;
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .notice-board-wrapper.collapsed .notice-toggle-bar {
+            border-radius: 12px;
+        }
+
+        .notice-toggle-bar:hover {
+            background: #253047;
+        }
+
+        .notice-toggle-bar .bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .notice-toggle-bar .bar-left .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f59e0b;
+            box-shadow: 0 0 6px #f59e0b88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .notice-toggle-bar .toggle-arrow {
+            font-size: 18px;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1;
+        }
+
+        .notice-board-wrapper.collapsed .toggle-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .notice-board {
+            background: var(--notice-bg);
+            border-radius: 0 0 12px 12px;
+            padding: 16px 20px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+            overflow: hidden;
+            max-height: 600px;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s, opacity 0.3s;
+            opacity: 1;
+        }
+
+        .notice-board-wrapper.collapsed .notice-board {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .notice-card {
+            background: var(--notice-card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .notice-card-header {
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notice-card-header .accent-bar {
+            width: 3px;
+            height: 14px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .notice-card-body {
+            padding: 10px 14px 14px;
+        }
+
+        .notice-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .notice-item:last-child {
+            border-bottom: none;
+        }
+
+        .notice-item::before {
+            content: '›';
+            font-size: 15px;
+            flex-shrink: 0;
+            margin-top: 0px;
+            opacity: 0.5;
+        }
+
+        /* Login card */
+        .login-card .notice-card-body {
+            padding-bottom: 10px;
+        }
+
+        .login-entry {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .login-label {
+            font-weight: 600;
+            color: #e2e8f0;
+            min-width: 90px;
+            font-size: 12px;
+        }
+
+        .login-value {
+            color: #94a3b8;
+            font-family: 'Consolas', monospace;
+            font-size: 11.5px;
+            cursor: copy;
+            padding: 1px 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .login-value:hover {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+        }
+
+        .login-add-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .login-add-row input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #e2e8f0;
+            padding: 5px 8px;
+            font-size: 11px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .login-add-row input::placeholder {
+            color: #64748b;
+        }
+
+        .login-add-row input:focus {
+            border-color: #34d399;
+        }
+
+        .btn-add-login {
+            background: #34d399;
+            color: #0f1f30;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add-login:hover {
+            background: #10b981;
+        }
+
+        .btn-rm-login {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 2px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .btn-rm-login:hover {
+            color: #fb7185;
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            background: var(--card-bg);
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* ==================== KANBAN ==================== */
+        .board {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 300px;
+            background: #ebecf0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 160px);
+        }
+
+        .column-header {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-count {
+            background: #dfe1e6;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 100px;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            cursor: grab;
+            border-left: 5px solid var(--outros-color);
+            position: relative;
+        }
+
+        .task-card:active {
+            cursor: grabbing;
+        }
+
+        .task-card.INTO {
+            border-left-color: var(--into-color);
+        }
+
+        .task-card.JBRJ {
+            border-left-color: var(--jbrj-color);
+        }
+
+        .task-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            display: inline-block;
+            margin-bottom: 8px;
+            margin-right: 4px;
+        }
+
+        .badge-INTO {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-JBRJ {
+            background: #dcfce3;
+            color: #166534;
+        }
+
+        .badge-OUTROS {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .contract-icon {
+            font-size: 1.2em;
+            margin-right: 4px;
+        }
+
+        .task-type {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
+        .task-text {
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .show-toast {
+            opacity: 1;
+        }
+
+        .subtasks-container {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #ced4da;
+            display: none;
+        }
+
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .subtask-item input {
+            cursor: pointer;
+        }
+
+        .subtask-text.done {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .btn-subtasks {
+            margin-top: 10px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-subtasks:hover {
+            background: #e2e8f0;
+        }
+
+        .raw-content {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #334155;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== QUADRO DE AVISOS ========== -->
+    <div class="notice-board-wrapper" id="noticeBoardWrapper">
+        <div class="notice-toggle-bar" onclick="toggleNoticeBoard()"
+            title="Clique para recolher/expandir o Quadro de Avisos">
+            <div class="bar-left">
+                <span class="dot"></span>
+                <span>📋 Quadro de Avisos</span>
+            </div>
+            <span class="toggle-arrow" id="noticeArrow">▼</span>
+        </div>
+        <div class="notice-board" id="noticeBoard">
+
+            {% for section in notices %}
+            {% set icon = '🚀' if 'DEPLOY' in section.title.upper() else ('📅' if 'PESSOAL' in section.title.upper()
+            else ('🏖️' if 'FÉRIAS' in section.title.upper() or 'FERIAS' in section.title.upper() else '📌')) %}
+            {% set accent = '#f59e0b' if 'DEPLOY' in section.title.upper() else ('#a78bfa' if 'PESSOAL' in
+            section.title.upper() else ('#fb7185' if 'FÉRIAS' in section.title.upper() or 'FERIAS' in
+            section.title.upper() else '#60a5fa')) %}
+            <div class="notice-card">
+                <div class="notice-card-header" style="color: {{ accent }};">
+                    <span class="accent-bar" style="background: {{ accent }};"></span>
+                    {{ icon }} {{ section.title }}
+                </div>
+                <div class="notice-card-body">
+                    {% for item in section['items'] %}
+                    <div class="notice-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Card de Logins Favoritos (localStorage) -->
+            <div class="notice-card login-card" id="loginCard">
+                <div class="notice-card-header" style="color: #34d399;">
+                    <span class="accent-bar" style="background: #34d399;"></span>
+                    🔑 Logins Frequentes
+                </div>
+                <div class="notice-card-body">
+                    <div id="loginList"></div>
+                    <div class="login-add-row">
+                        <input type="text" id="loginLabel" placeholder="Sistema/URL" autocomplete="off" style="width: 30%;">
+                        <input type="text" id="loginUser" placeholder="Usuário" autocomplete="off" style="width: 30%;">
+                        <input type="password" id="loginPwd" placeholder="Senha" autocomplete="off" style="width: 30%;">
+                        <button class="btn-add-login" onclick="addLogin()" title="Adicionar login">＋</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ======================================= -->
+
+    <div class="header">
+        <div>
+            <h1 style="margin-bottom: 8px;">📌 Planejamento Semanal - Kanban</h1>
+            {% if mensagem_do_dia %}
+            <div style="font-size: 13px; color: #64748b; font-style: italic; max-width: 800px; line-height: 1.4;">
+                "{{ mensagem_do_dia.texto }}" <br>
+                <strong style="color: #475569; font-style: normal;">— {{ mensagem_do_dia.autor }}</strong>
+            </div>
+            {% endif %}
+        </div>
+        <button onclick="location.reload()"
+            style="padding: 8px 16px; cursor: pointer; border: 1px solid #dee2e6; border-radius: 6px; background: white; font-family: inherit; font-size: 13px; margin-left: 20px;">🔄
+            Atualizar Quadro</button>
+    </div>
+
+    <div class="board">
+        <!-- A Fazer -->
+        <div class="column">
+            <div class="column-header">
+                A Fazer <span class="column-count" id="count-todo">0</span>
+            </div>
+            <div class="task-list" id="todo" data-status="todo">
+                {% for task in tasks if task.status == 'todo' %}
+                <div class="task-card {{ task.contract }}" data-id="{{ task.id }}" data-contract="{{ task.contract }}"
+                    data-type="{{ task.type }}">
+                    <div>
+                        <span class="task-badge badge-{{ task.contract }}">
+                            {% if task.contract == 'INTO' %}
+                            🔵 INTO
+                            {% elif task.contract == 'JBRJ' %}
+                            🟢 JBRJ
+                            {% else %}
+                            ⚪ {{ task.contract }}
+                            {% endif %}
+                        </span>
+                        <span class="task-type">{{ task.type }}</span>
+                    </div>
+                    <div class="task-text">{{ task.text }}</div>
+
+                    {% if task.subtask_file %}
+                    <button class="btn-subtasks" onclick="toggleSubtasks(this, '{{ task.subtask_file }}')">
+                        <span>📋 Ver Subtarefas</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="subtasks-container">
+                        <!-- Loaded via JS -->
+                        <div class="loading" style="font-size: 11px; color: #64748b;">Carregando...</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Em Andamento -->
+        <div class="column">
+            <div class="column-header">
+                Em Andamento <span class="column-count" id="count-doing">0</span>
+            </div>
+            <div class="task-list" id="doing" data-status="doing">
+                {% for task in tasks if task.status == 'doing' %}
+                <div class="task-card {{ task.contract }}" data-id="{{ task.id }}" data-contract="{{ task.contract }}"
+                    data-type="{{ task.type }}">
+                    <div>
+                        <span class="task-badge badge-{{ task.contract }}">
+                            {% if task.contract == 'INTO' %}
+                            🔵 INTO
+                            {% elif task.contract == 'JBRJ' %}
+                            🟢 JBRJ
+                            {% else %}
+                            ⚪ {{ task.contract }}
+                            {% endif %}
+                        </span>
+                        <span class="task-type">{{ task.type }}</span>
+                    </div>
+                    <div class="task-text">{{ task.text }}</div>
+
+                    {% if task.subtask_file %}
+                    <button class="btn-subtasks" onclick="toggleSubtasks(this, '{{ task.subtask_file }}')">
+                        <span>📋 Ver Subtarefas</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="subtasks-container">
+                        <!-- Loaded via JS -->
+                        <div class="loading" style="font-size: 11px; color: #64748b;">Carregando...</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Concluído -->
+        <div class="column">
+            <div class="column-header">
+                Concluído <span class="column-count" id="count-done">0</span>
+            </div>
+            <div class="task-list" id="done" data-status="done">
+                <!-- Vazio inicialmente -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="notification">Status atualizado!</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCounts();
+
+            const columns = ['todo', 'doing', 'done'];
+
+            columns.forEach(colId => {
+                const el = document.getElementById(colId);
+                new Sortable(el, {
+                    group: 'kanban',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function (evt) {
+                        const itemEl = evt.item;
+                        const toEl = evt.to;
+                        const fromEl = evt.from;
+
+                        if (toEl === fromEl) return;
+
+                        const newStatus = toEl.getAttribute('data-status');
+                        const taskId = parseInt(itemEl.getAttribute('data-id'));
+                        const contract = itemEl.getAttribute('data-contract');
+                        const type = itemEl.getAttribute('data-type');
+                        const text = itemEl.querySelector('.task-text').textContent.trim();
+
+                        updateTaskStatus(taskId, newStatus, contract, type, text, itemEl, fromEl);
+                        updateCounts();
+                    },
+                });
+            });
+        });
+
+        function updateCounts() {
+            document.getElementById('count-todo').textContent = document.getElementById('todo').children.length;
+            document.getElementById('count-doing').textContent = document.getElementById('doing').children.length;
+            document.getElementById('count-done').textContent = document.getElementById('done').children.length;
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#e74c3c' : '#2ecc71';
+            toast.classList.add('show-toast');
+            setTimeout(() => {
+                toast.classList.remove('show-toast');
+            }, 3000);
+        }
+
+        async function updateTaskStatus(id, status, contract, type, text, itemEl, fromEl) {
+            try {
+                const response = await fetch('/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, status, contract, type, text })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    let msg = "Status atualizado: " + status;
+                    if (status === 'done') {
+                        msg = "Tarefa movida para o Histórico!";
+                        // Se for done, remove do quadro após um tempinho
+                        setTimeout(() => itemEl.remove(), 1000);
+                    }
+                    showToast(msg);
+                } else {
+                    showToast("Erro: " + data.error, true);
+                    fromEl.appendChild(itemEl);
+                    updateCounts();
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Erro de conexão ao servidor.", true);
+                fromEl.appendChild(itemEl);
+                updateCounts();
+            }
+        }
+
+        async function toggleSubtasks(btn, filename) {
+            const container = btn.nextElementSibling;
+            const arrow = btn.querySelector('.arrow');
+
+            if (container.style.display === 'block') {
+                container.style.display = 'none';
+                arrow.textContent = '▼';
+            } else {
+                container.style.display = 'block';
+                arrow.textContent = '▲';
+                loadSubtasks(container, filename);
+            }
+        }
+
+        async function loadSubtasks(container, filename) {
+            try {
+                const response = await fetch(`/subtasks/${filename}`);
+                const subtasks = await response.json();
+
+                container.innerHTML = '';
+
+                // Case 1: Simple text content (view mode)
+                if (subtasks.content !== undefined) {
+                    container.innerHTML = `<div class="raw-content">${subtasks.content}</div>`;
+                    return;
+                }
+
+                // Case 2: Checklist mode
+                if (subtasks.length === 0) {
+                    container.innerHTML = '<div style="font-size: 11px; color: #64748b;">Nenhuma subtarefa encontrada.</div>';
+                    return;
+                }
+
+                subtasks.forEach(st => {
+                    const item = document.createElement('div');
+                    item.className = 'subtask-item';
+
+                    const checked = st.done ? 'checked' : '';
+                    const doneClass = st.done ? 'done' : '';
+
+                    item.innerHTML = `
+                        <input type="checkbox" ${checked} onchange="updateSubtask(this, '${filename}', ${st.id})">
+                        <span class="subtask-text ${doneClass}">${st.text}</span>
+                    `;
+                    container.appendChild(item);
+                });
+            } catch (err) {
+                container.innerHTML = '<div style="font-size: 11px; color: #e74c3c;">Erro ao carregar o bloco.</div>';
+            }
+        }
+
+        async function updateSubtask(checkbox, filename, id) {
+            const textEl = checkbox.nextElementSibling;
+            const isDone = checkbox.checked;
+
+            try {
+                const response = await fetch('/toggle_subtask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename, id, done: isDone })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    if (isDone) textEl.classList.add('done');
+                    else textEl.classList.remove('done');
+                    showToast("Subtarefa atualizada!");
+                } else {
+                    showToast("Erro: " + data.error, true);
+                    checkbox.checked = !isDone;
+                    if (!isDone) textEl.classList.add('done');
+                    else textEl.classList.remove('done');
+                }
+            } catch (err) {
+                showToast("Erro de conexão.", true);
+                checkbox.checked = !isDone;
+            }
+        }
+
+        // ==================== QUADRO DE AVISOS ====================
+
+        function toggleNoticeBoard() {
+            const wrapper = document.getElementById('noticeBoardWrapper');
+            wrapper.classList.toggle('collapsed');
+            const isCollapsed = wrapper.classList.contains('collapsed');
+            localStorage.setItem('noticeBoardCollapsed', isCollapsed ? '1' : '0');
+        }
+
+        // --- Logins Favoritos ---
+        const LOGINS_KEY = 'kanban_logins_v1';
+
+        function loadLogins() {
+            const stored = localStorage.getItem(LOGINS_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveLogins(logins) {
+            localStorage.setItem(LOGINS_KEY, JSON.stringify(logins));
+        }
+
+        function renderLogins() {
+            const logins = loadLogins();
+            const list = document.getElementById('loginList');
+            list.innerHTML = '';
+            if (logins.length === 0) {
+                list.innerHTML = '<div style="color: #64748b; font-size: 11.5px; padding: 4px 0;">Nenhum login salvo. Adicione abaixo!</div>';
+                return;
+            }
+            logins.forEach((login, idx) => {
+                const row = document.createElement('div');
+                row.className = 'login-entry';
+                let pwdHtml = login.pwd ? `<span class="login-value" onclick="copyToClipboard('${login.pwd}', this)" title="Clique para copiar Senha">••••••••</span>` : '';
+                
+                row.innerHTML = `
+                    <span class="login-label" title="${login.label}">${login.label}</span>
+                    <span class="login-value" onclick="copyToClipboard('${login.user}', this)" title="Clique para copiar Usuário">${login.user}</span>
+                    ${pwdHtml}
+                    <button class="btn-rm-login" onclick="removeLogin(${idx})" title="Remover">✕</button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function addLogin() {
+            const label = document.getElementById('loginLabel').value.trim();
+            const user = document.getElementById('loginUser').value.trim();
+            const pwd  = document.getElementById('loginPwd').value.trim();
+            
+            if (!label || !user) {
+                showToast('Preencha pelo menos Sistema e Usuário!', true);
+                return;
+            }
+            const logins = loadLogins();
+            logins.push({ label, user, pwd });
+            saveLogins(logins);
+            renderLogins();
+            
+            document.getElementById('loginLabel').value = '';
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPwd').value = '';
+            showToast('Login adicionado!');
+        }
+
+        function removeLogin(idx) {
+            const logins = loadLogins();
+            logins.splice(idx, 1);
+            saveLogins(logins);
+            renderLogins();
+            showToast('Login removido.');
+        }
+
+        function copyToClipboard(text, el) {
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = el.textContent;
+                el.textContent = '✓ Copiado!';
+                setTimeout(() => { el.textContent = orig; }, 1500);
+            }).catch(() => showToast('Não foi possível copiar.', true));
+        }
+
+        // Restaurar estado do painel ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Notice board collapse state
+            if (localStorage.getItem('noticeBoardCollapsed') === '1') {
+                document.getElementById('noticeBoardWrapper').classList.add('collapsed');
+            }
+            // Logins
+            renderLogins();
+        });
+
+        // Enter para adicionar login
+        ['loginLabel', 'loginUser'].forEach(id => {
+            document.getElementById(id)?.addEventListener('keydown', e => {
+                if (e.key === 'Enter') addLogin();
+            });
+        });
+
+    </script>
+</body>
+
+</html>

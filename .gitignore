@@ -1,0 +1,23 @@
+# Ignorar todos os arquivos de texto (pois contêm tarefas, nomes de clientes, logins ou anotações pessoais da empresa)
+*.txt
+
+# Se futuramente você quiser subir um arquivo de exemplo sem dados reais, remova o '#' da linha abaixo:
+# !tarefasDiarias-exemplo.txt
+
+# Cache do web scraper
+mensagem_cache.json
+
+# Pastas e arquivos de cache nativos do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambientes virtuais (caso venha a criar um futuramente)
+venv/
+env/
+.env
+
+# Arquivos de sistema operacional (Mac/Windows)
+.DS_Store
+Thumbs.db
