@@ -69,7 +69,7 @@ TASKS_FILE = 'tarefasDiarias.txt'
 HISTORY_FILE = 'historico.txt'
 
 def parse_notice_board():
-    """Lê seções de aviso do arquivo de tarefas (deploy, pessoal, etc.)"""
+    """Lê seções de aviso do arquivo de tarefas (deploy, importante, etc.)"""
     if not os.path.exists(TASKS_FILE):
         return []
     
@@ -80,7 +80,7 @@ def parse_notice_board():
     lines = content.split('\n')
     
     # Seções que queremos capturar como avisos (não são Demandas/Melhorias do Kanban)
-    NOTICE_KEYWORDS = ['DEPLOY', 'PESSOAL', 'FÉRIAS', 'FERIAS', 'POSSIBILIDADE']
+    NOTICE_KEYWORDS = ['DEPLOY', 'IMPORTANTE', 'FÉRIAS', 'FERIAS', 'POSSIBILIDADE']
     SKIP_KEYWORDS = ['DEMANDA', 'MELHORIA']
     
     current_section = None

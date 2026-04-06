@@ -494,9 +494,9 @@
         <div class="notice-board" id="noticeBoard">
 
             {% for section in notices %}
-            {% set icon = '🚀' if 'DEPLOY' in section.title.upper() else ('📅' if 'PESSOAL' in section.title.upper()
+            {% set icon = '🚀' if 'DEPLOY' in section.title.upper() else ('📅' if 'IMPORTANTE' in section.title.upper()
             else ('🏖️' if 'FÉRIAS' in section.title.upper() or 'FERIAS' in section.title.upper() else '📌')) %}
-            {% set accent = '#f59e0b' if 'DEPLOY' in section.title.upper() else ('#a78bfa' if 'PESSOAL' in
+            {% set accent = '#f59e0b' if 'DEPLOY' in section.title.upper() else ('#a78bfa' if 'IMPORTANTE' in
             section.title.upper() else ('#fb7185' if 'FÉRIAS' in section.title.upper() or 'FERIAS' in
             section.title.upper() else '#60a5fa')) %}
             <div class="notice-card">
@@ -521,7 +521,8 @@
                 <div class="notice-card-body">
                     <div id="loginList"></div>
                     <div class="login-add-row">
-                        <input type="text" id="loginLabel" placeholder="Sistema/URL" autocomplete="off" style="width: 30%;">
+                        <input type="text" id="loginLabel" placeholder="Sistema/URL" autocomplete="off"
+                            style="width: 30%;">
                         <input type="text" id="loginUser" placeholder="Usuário" autocomplete="off" style="width: 30%;">
                         <input type="password" id="loginPwd" placeholder="Senha" autocomplete="off" style="width: 30%;">
                         <button class="btn-add-login" onclick="addLogin()" title="Adicionar login">＋</button>
@@ -829,7 +830,7 @@
                 const row = document.createElement('div');
                 row.className = 'login-entry';
                 let pwdHtml = login.pwd ? `<span class="login-value" onclick="copyToClipboard('${login.pwd}', this)" title="Clique para copiar Senha">••••••••</span>` : '';
-                
+
                 row.innerHTML = `
                     <span class="login-label" title="${login.label}">${login.label}</span>
                     <span class="login-value" onclick="copyToClipboard('${login.user}', this)" title="Clique para copiar Usuário">${login.user}</span>
@@ -843,8 +844,8 @@
         function addLogin() {
             const label = document.getElementById('loginLabel').value.trim();
             const user = document.getElementById('loginUser').value.trim();
-            const pwd  = document.getElementById('loginPwd').value.trim();
-            
+            const pwd = document.getElementById('loginPwd').value.trim();
+
             if (!label || !user) {
                 showToast('Preencha pelo menos Sistema e Usuário!', true);
                 return;
@@ -853,7 +854,7 @@
             logins.push({ label, user, pwd });
             saveLogins(logins);
             renderLogins();
-            
+
             document.getElementById('loginLabel').value = '';
             document.getElementById('loginUser').value = '';
             document.getElementById('loginPwd').value = '';
