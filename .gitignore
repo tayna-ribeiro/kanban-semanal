@@ -21,3 +21,7 @@ env/
 # Arquivos de sistema operacional (Mac/Windows)
 .DS_Store
 Thumbs.db
+
+# Arquivos de inicialização locais (caminhos absolutos e configurações pessoais)
+start_kanban.sh
+kanban.desktop
