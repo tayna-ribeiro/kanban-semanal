@@ -80,7 +80,7 @@ def parse_notice_board():
     lines = content.split('\n')
     
     # Seções que queremos capturar como avisos (não são Demandas/Melhorias do Kanban)
-    NOTICE_KEYWORDS = ['DEPLOY', 'IMPORTANTE', 'FÉRIAS', 'FERIAS', 'POSSIBILIDADE']
+    NOTICE_KEYWORDS = ['DEPLOY', 'IMPORTANTE', 'FÉRIAS', 'FERIAS', 'POSSIBILIDADE', 'PRAZOS', 'DEADLINE']
     SKIP_KEYWORDS = ['DEMANDA', 'MELHORIA']
     
     current_section = None
