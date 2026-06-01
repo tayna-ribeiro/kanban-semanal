@@ -25,3 +25,4 @@ Thumbs.db
 # Arquivos de inicialização locais (caminhos absolutos e configurações pessoais)
 start_kanban.sh
 kanban.desktop
+kanban_autostart.log
