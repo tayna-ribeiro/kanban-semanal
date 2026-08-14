@@ -26,3 +26,9 @@ Thumbs.db
 start_kanban.sh
 kanban.desktop
 kanban_autostart.log
+
+# Bancos de dados locais (SQLite)
+kanban.db
+*.db
+*.sqlite
+*.db-journal

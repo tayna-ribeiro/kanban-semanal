@@ -245,3 +245,40 @@ def test_login_routes(setup_test_file):
     # 4. Verify gone
     response_get2 = client.get('/api/logins')
     assert len(response_get2.get_json()) == 0
+
+def test_add_item_route_complete(setup_test_file):
+    client = kanban_semanal.app.test_client()
+    
+    payload = {
+        'item_type': 'task',
+        'title': 'Nova Tarefa Completa',
+        'description': 'Descrição cadastrada',
+        'contract': 'PESSOAL',
+        'tag': 'Estudo',
+        'start_date': '2026-08-14',
+        'end_date': '2026-08-16',
+        'subtask_title': 'subCadastro',
+        'subtasks_text': '* Passo A\n* Passo B - OK'
+    }
+    
+    response = client.post('/add_item', json=payload)
+    assert response.status_code == 200
+    assert response.get_json()['success'] is True
+    
+    # Verifica no DB
+    tasks = kanban_semanal.parse_tasks()
+    new_task = next(t for t in tasks if t['text'] == 'Nova Tarefa Completa')
+    assert new_task['description'] == 'Descrição cadastrada'
+    assert new_task['contract'] == 'PESSOAL'
+    assert new_task['type'] == 'Estudo'
+    assert new_task['start_date'] == '2026-08-14'
+    assert new_task['end_date'] == '2026-08-16'
+    assert new_task['subtask_title'] == 'subCadastro'
+    
+    # Verifica subtarefas
+    subtasks = new_task['subtasks']
+    assert len(subtasks) == 2
+    assert subtasks[0]['text'] == 'Passo A'
+    assert subtasks[0]['done'] is False
+    assert subtasks[1]['text'] == 'Passo B'
+    assert subtasks[1]['done'] is True

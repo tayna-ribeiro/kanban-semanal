@@ -286,7 +286,15 @@ def parse_tasks():
             """)
             rows = cursor.fetchall()
             for row in rows:
-                subtasks_list = json.loads(row['subtasks_json']) if row['subtasks_json'] else []
+                raw_subtasks = json.loads(row['subtasks_json']) if row['subtasks_json'] else []
+                subtasks_list = []
+                for st in raw_subtasks:
+                    if st and isinstance(st, dict) and 'id' in st:
+                        subtasks_list.append({
+                            'id': st['id'],
+                            'text': st['text'],
+                            'done': bool(st['done'])
+                        })
                 tasks.append({
                     'id': row['id'],
                     'start_idx': row['id'],
@@ -424,13 +432,48 @@ def add_item():
         return jsonify({"success": False, "error": "Tipo de item não especificado"}), 400
         
     if item_type == 'task':
+        title = data.get('title')
+        description = data.get('description', '')
         contract = data.get('contract')
         tag = data.get('tag')
-        text = data.get('text')
-        if not contract or not tag or not text:
-            return jsonify({"success": False, "error": "Contrato, tag e texto são obrigatórios"}), 400
-        success = insert_task_in_file(contract, tag, text)
-        return jsonify({"success": success})
+        start_date = data.get('start_date') or None
+        end_date = data.get('end_date') or None
+        subtask_title = data.get('subtask_title', '').strip()
+        subtasks_text = data.get('subtasks_text', '')
+        
+        if not title:
+            return jsonify({"success": False, "error": "Título é obrigatório"}), 400
+            
+        try:
+            with get_db() as db:
+                cursor = db.execute("""
+                    INSERT INTO tasks (title, description, contract, tag, status, start_date, end_date, subtask_title, is_active, created_at)
+                    VALUES (?, ?, ?, ?, 'todo', ?, ?, ?, 1, ?)
+                """, (title, description, contract, tag, start_date, end_date, subtask_title, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                task_id = cursor.lastrowid
+                
+                if subtasks_text.strip():
+                    subtasks_lines = subtasks_text.split('\n')
+                    subtasks_list = []
+                    for line in subtasks_lines:
+                        line_stripped = line.strip()
+                        if line_stripped:
+                            text_clean = line_stripped.lstrip('*').lstrip('-').strip()
+                            if text_clean:
+                                is_done = 0
+                                if text_clean.lower().endswith('- ok') or '[x]' in line_stripped.lower():
+                                    is_done = 1
+                                    if text_clean.lower().endswith('- ok'):
+                                        text_clean = text_clean[:-4].strip()
+                                    else:
+                                        text_clean = text_clean.replace('[x]', '').replace('[X]', '').strip()
+                                subtasks_list.append((task_id, text_clean, is_done))
+                    if subtasks_list:
+                        db.executemany("INSERT INTO subtasks (task_id, text, is_done) VALUES (?, ?, ?)", subtasks_list)
+                db.commit()
+            return jsonify({"success": True})
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
     elif item_type == 'notice':
         section = data.get('section')
         text = data.get('text')

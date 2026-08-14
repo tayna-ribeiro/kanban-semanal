@@ -1172,20 +1172,30 @@
         async function submitNewItem() {
             let payload = {};
             if (currentTab === 'task') {
+                const title = document.getElementById('taskTitle').value.trim();
+                const description = document.getElementById('taskDescription').value.trim();
                 const contract = document.getElementById('taskContract').value;
                 const tag = document.getElementById('taskTag').value;
-                const text = document.getElementById('taskText').value.trim();
+                const start_date = document.getElementById('taskStartDate').value;
+                const end_date = document.getElementById('taskEndDate').value;
+                const subtask_title = document.getElementById('taskSubtaskTitle').value.trim();
+                const subtasks_text = document.getElementById('taskSubtasksText').value;
                 
-                if (!text) {
-                    showToast('Descreva a tarefa!', true);
+                if (!title) {
+                    showToast('Título é obrigatório!', true);
                     return;
                 }
                 
                 payload = {
                     item_type: 'task',
+                    title: title,
+                    description: description,
                     contract: contract,
                     tag: tag,
-                    text: text
+                    start_date: start_date,
+                    end_date: end_date,
+                    subtask_title: subtask_title,
+                    subtasks_text: subtasks_text
                 };
             } else {
                 const section = document.getElementById('noticeSection').value;
@@ -1214,8 +1224,16 @@
                 if (data.success) {
                     showToast('Item adicionado com sucesso!');
                     document.getElementById('addDialog').close();
-                    document.getElementById('taskText').value = '';
-                    document.getElementById('noticeText').value = '';
+                    if (currentTab === 'task') {
+                        document.getElementById('taskTitle').value = '';
+                        document.getElementById('taskDescription').value = '';
+                        document.getElementById('taskStartDate').value = '';
+                        document.getElementById('taskEndDate').value = '';
+                        document.getElementById('taskSubtaskTitle').value = '';
+                        document.getElementById('taskSubtasksText').value = '';
+                    } else {
+                        document.getElementById('noticeText').value = '';
+                    }
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     showToast('Erro ao salvar: ' + data.error, true);
@@ -1400,6 +1418,10 @@
         <!-- Formulário para Tarefas -->
         <div id="formTaskSection">
             <div class="form-group">
+                <label for="taskTitle">Título da Tarefa</label>
+                <input type="text" id="taskTitle" class="form-control" placeholder="Título">
+            </div>
+            <div class="form-group">
                 <label for="taskContract">Contrato</label>
                 <select id="taskContract" class="form-control">
                     <option value="INTO">INTO</option>
@@ -1420,8 +1442,26 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="taskText">Descrição da Tarefa</label>
-                <textarea id="taskText" class="form-control" rows="3" placeholder="O que precisa ser feito?"></textarea>
+                <label for="taskDescription">Descrição Detalhada</label>
+                <textarea id="taskDescription" class="form-control" rows="2" placeholder="Notas ou observações adicionais..."></textarea>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="taskStartDate">Data de Início</label>
+                    <input type="date" id="taskStartDate" class="form-control">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="taskEndDate">Prazo Final</label>
+                    <input type="date" id="taskEndDate" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="taskSubtaskTitle">Título do Bloco de Subtarefas</label>
+                <input type="text" id="taskSubtaskTitle" class="form-control" placeholder="ex: gestaoAcademica2">
+            </div>
+            <div class="form-group">
+                <label for="taskSubtasksText">Subtarefas (uma por linha)</label>
+                <textarea id="taskSubtasksText" class="form-control" rows="4" placeholder="* Subtarefa 1&#10;* Subtarefa 2 - OK"></textarea>
             </div>
         </div>
         
