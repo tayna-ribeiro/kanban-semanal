@@ -1,64 +1,108 @@
 # Planejamento Semanal - Kanban
 
-Um sistema leve e ágil de gerenciamento de tarefas estruturado como um quadro Kanban no navegador. Construído em **Python (Flask)**, o sistema lê dados de arquivos de texto locais (como `tarefasDiarias.txt`), converte anotações em cartões interativos (com recurso de arrastar e soltar) e acompanha o ciclo de vida das suas atividades diárias e recados.
+Um sistema leve, ágil e moderno de gerenciamento de tarefas estruturado como um quadro Kanban no navegador. Construído em **Python (Flask)** e **SQLite**, o sistema oferece cartões interativos (com recurso de arrastar e soltar), edição avançada de atividades, checklists de subtarefas, prazos de início/fim e um cofre seguro de logins frequentes.
+
+---
 
 ## Funcionalidades
 
-- **Kanban Interativo (Drag & Drop):** Arraste tarefas entre as colunas "A Fazer", "Em Andamento" e "Concluído" de forma simples.
-- **Integração com Arquivos Texto:** O sistema dispensa banco de dados complexos; basta editar o seu arquivo `tarefasDiarias.txt` e a interface é atualizada automaticamente!
-- **Checklists Secundários:** Crie arquivos `.txt` de apoio (ex: `Reabilitacao.txt`) para gerenciar subtarefas. O Kanban interpreta chamadas como `consultar o bloco "Reabilitacao"` e embute uma lista de checagem nativa no card.
-- **Histórico Automático:** Ao arrastar uma tarefa para "Concluído", o sistema não a perde. Ela é registrada permanentemente no arquivo `historico.txt` com a data e hora do encerramento.
-- **Quadro de Avisos:** Gerencia recados cruciais da equipe (como links úteis, lembretes de **Deploy** ou datas  **Pessoais**) no topo do painel.
-- **Inspirador Diário:** Graças a um web scraper nativo, a barra de título exibe diariamente uma citação inteligente/inspiradora sobre Tecnologia ou Doutrina Espírita capturada da web.
-- **Cofre de Logins Frequentes:** Gerenciador interno usando *localStorage* do seu navegador para guardar rapidamente sistemas/URLs e senhas. Copie os dados com um simples clique para transitar melhor entre os sistemas corporativos.
+- **Kanban Interativo (Drag & Drop):** Arraste tarefas entre as colunas "A Fazer", "Em Andamento" e "Concluído" de forma fluida.
+- **Persistência em Banco de Dados (SQLite):** Centralização completa e segura de dados no arquivo `kanban.db`. Acabe com a edição manual de arquivos de texto e inconsistências de concorrência.
+- **Edição Avançada de Cards:** Abra o modal de edição clicando no ícone "✏️" para ajustar:
+  - Título do card.
+  - Vínculo de Contrato (INTO, JBRJ, PESSOAL, OUTROS).
+  - Categorização por Tags (Demanda, Melhoria, Correção, Estudo, Ajuste, Documentação).
+  - Descrição detalhada do card.
+  - Datas de Início e Prazo Final (com calendário integrado).
+- **Checklists Estruturados de Subtarefas:** Digite ou cole subtarefas linha a linha no editor do card (ex: `* Item 1`). O sistema salva no banco de dados e as exibe como itens interativos com checkboxes reativos diretamente no card do Kanban.
+- **Quadro de Avisos Dinâmico:** Gerencie recados urgentes da equipe (como lembretes de **Deploy**, comunicados **Importantes**, prazos gerais ou **Férias**) de forma visual no topo do painel.
+- **Cofre de Logins Frequentes:** Gerencie com segurança seus acessos rápidos (Sistema/URL, Usuário e Senha) salvando-os no banco de dados. Copie qualquer credencial para a área de transferência com um único clique.
+- **Histórico de Fechamento:** Ao concluir uma tarefa, ela é registrada automaticamente em `historico.txt` com a data e hora do encerramento.
+
+---
 
 ## Tecnologias Utilizadas
 
-- **Backend:** Python + Flask (microframework rápido e excelente para scripts locais).
-- **Frontend:** HTML5, CSS Nativo (aparência minimalista e *clean*) e Vanilla JavaScript.
-- **Recursos Dinâmicos:** [SortableJS](https://sortablejs.github.io/Sortable/) (para animações de Kanban fluidas).
+- **Backend:** Python + Flask (microframework rápido para servidores locais) + SQLite3 (banco de dados relacional em arquivo).
+- **Frontend:** HTML5, CSS Nativo (aparência minimalista e moderna) e Vanilla JavaScript.
+- **Componentes Dinâmicos:** [SortableJS](https://sortablejs.github.io/Sortable/) (para drag-and-drop de cards).
+- **Testes Automatizados:** Pytest.
+
+---
 
 ## Como Executar
 
-1. **Pré-requisitos:**
-   Certifique-se de ter o Python instalado na sua máquina. A biblioteca `flask` é necessária.
+### 1. Preparação do Ambiente (Recomendado)
 
-   ```bash
-   pip install flask
-   ```
+Crie e ative um ambiente virtual virtualenv do Python:
 
-2. **Inicializando o App:**
-   No seu terminal, dentro do diretório do projeto, rode:
+```bash
+# Criar o ambiente virtual
+python3 -m venv venv
 
-   ```bash
-   python kanban_semanal.py
-   ```
+# Ativar o ambiente virtual (Linux/macOS)
+source venv/bin/activate
 
-3. **Acessando na Web:**
-   Seu Kanban estará no ar imediatamente. Abra no seu navegador:
-    [http://127.0.0.1:5000](http://127.0.0.1:5000)
+# Ativar o ambiente virtual (Windows)
+# venv\Scripts\activate
+```
+
+Instale o Flask caso ainda não possua:
+
+```bash
+pip install flask pytest
+```
+
+### 2. Inicializando o Servidor
+
+Execute o backend:
+
+```bash
+python kanban_semanal.py
+```
+
+Abra o seu navegador e acesse:
+[http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+### 3. Rodando os Testes Automatizados
+
+O projeto conta com uma suíte de **11 testes automatizados** testando o banco de dados e as APIs do Flask:
+
+```bash
+PYTHONPATH=. ./venv/bin/pytest tests/
+```
+
+---
 
 ## Estrutura do Projeto
 
 ```text
 /tarefas_diarias
  │
- ├── kanban_semanal.py      # Servidor Backend (Flask) e lógicas Python
- ├── tarefasDiarias.txt     # Seu arquivo principal que alimenta o sistema
- ├── historico.txt          # Seu log de registro de conclusão de atividades armazenado automaticamente
- ├── Reabilitacao.txt       # Arquivos extras atuam como 'sub-tarefas' (Checklists embutidos)
+ ├── kanban_semanal.py      # Servidor Backend (Flask), rotas de API e conexões SQLite
+ ├── kanban.db              # Banco de dados SQLite contendo todas as tabelas (tasks, subtasks, notices, logins)
+ ├── historico.txt          # Log de auditoria e arquivamento das tarefas concluídas
+ ├── start_kanban.sh        # Script shell para autostart rápido
+ ├── README.md              # Este manual de documentação
  │
- └── /templates
-      └── index.html        # Interface de Usuário Inteligente (Quadro + Scripts JS)
+ ├── /templates
+ │    └── index.html        # Frontend da interface de usuário interativa (Kanban + Avisos)
+ │
+ ├── /tests
+ │    └── test_kanban.py    # Testes unitários e de integração de rotas e banco
+ │
+ └── /specs
+      └── [Especs].md       # Especificações de requisitos escritas durante o processo de evolução do projeto
 ```
 
-## Como usar o `tarefasDiarias.txt`
-
-O Backend reconhece padrões no seu texto:
-
-- Títulos maiores (H2) que contenham *Demanda* ou *Melhoria* indicam a criação de tarefas no Kanban ("A Fazer" por padrão).
-- O projeto usa termos-chave nos títulos para colorir de forma dinâmica os cartões (Ex: `## DEMANDAS DO INTO` ou `## DEMANDAS DO JBRJ`).
-- Títulos soltos com as palavras `DEPLOY` ou `PESSOAL` irão direto para o quadro recolhível de Avisos.
-- Adicionar no texto o trecho `[Em andamento]` coloca o cartão direto no status amarelo do painel.
-
 ---
+
+## Carga Inicial e Migração Automática
+
+Não se preocupe com seus dados antigos! Ao iniciar o servidor com banco de dados pela primeira vez:
+
+1. O backend detecta a presença do arquivo legível `tarefasDiarias.txt`.
+2. Faz o parsing automático de todos os cards, checklists e avisos.
+3. Importa todos os dados com perfeição para o arquivo `kanban.db`.
+4. Renomeia o arquivo antigo para `tarefasDiarias.txt.old` como cópia de segurança.
+5. Sincroniza e importa os logins guardados anteriormente no navegador.
