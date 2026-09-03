@@ -704,4 +704,5 @@ if __name__ == '__main__':
     print("Acesse http://127.0.0.1:5000 no seu navegador.")
     init_db()
     migrate_txt_to_sqlite()
-    app.run(debug=True, port=5000)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1')
+    app.run(debug=debug_mode, port=5000)
