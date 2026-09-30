@@ -1,5 +1,7 @@
 # Planejamento Semanal - Kanban
 
+![CI - Testes Automatizados](https://github.com/tayna-ribeiro/kanban-semanal/actions/workflows/ci.yml/badge.svg)
+
 Um sistema leve, ágil e moderno de gerenciamento de tarefas estruturado como um quadro Kanban no navegador. Construído em **Python (Flask)** e **SQLite**, o sistema oferece cartões interativos (com recurso de arrastar e soltar), edição avançada de atividades, checklists de subtarefas, prazos de início/fim e um cofre seguro de logins frequentes.
 
 ---
@@ -26,7 +28,8 @@ Um sistema leve, ágil e moderno de gerenciamento de tarefas estruturado como um
 - **Backend:** Python + Flask (microframework rápido para servidores locais) + SQLite3 (banco de dados relacional em arquivo).
 - **Frontend:** HTML5, CSS Nativo (aparência minimalista e moderna) e Vanilla JavaScript.
 - **Componentes Dinâmicos:** [SortableJS](https://sortablejs.github.io/Sortable/) (para drag-and-drop de cards).
-- **Testes Automatizados:** Pytest.
+- **Testes Automatizados:** Pytest + BeautifulSoup4 (validação de banco, rotas HTTP e integridade da interface/DOM).
+- **Integração Contínua (CI):** GitHub Actions (automação de testes em ambiente Linux/Python 3.12).
 
 ---
 
@@ -47,10 +50,10 @@ source venv/bin/activate
 # venv\Scripts\activate
 ```
 
-Instale o Flask caso ainda não possua:
+Instale as dependências do projeto:
 
 ```bash
-pip install flask pytest
+pip install -r requirements.txt
 ```
 
 ### 2. Inicializando o Servidor
@@ -64,13 +67,32 @@ python kanban_semanal.py
 Abra o seu navegador e acesse:
 [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-### 3. Rodando os Testes Automatizados
+### 3. Testes Automatizados e Pipeline de CI
 
-O projeto conta com uma suíte de **11 testes automatizados** testando o banco de dados e as APIs do Flask:
+O projeto conta com uma suíte de **22 testes automatizados** cobrindo ponta a ponta o backend e a interface:
+
+* **Backend e APIs (`tests/test_kanban.py` - 12 testes):**
+  - Leitura e listagem de tarefas e avisos no SQLite.
+  - Inserção, edição e exclusão de cards e prazos.
+  - Endpoints HTTP REST da API Flask (`/delete_task`, `/delete_notice`, `/edit_task`, etc.).
+  - Gerenciamento de credenciais rápidas (adicionar, listar, remover logins).
+
+* **Frontend e Interface (`tests/test_frontend.py` - 10 testes):**
+  - Renderização das 3 colunas do Kanban (*A Fazer*, *Em Andamento*, *Concluído*) e contadores.
+  - Exibição de cards, badges de contrato (`INTO`, `JBRJ`, `PESSOAL`) e datas formatadas.
+  - Estrutura completa dos modais de criação (`#addDialog`) e edição (`#editDialog`).
+  - Quadro de Avisos com alternância sanfona e widget de logins frequentes.
+  - Renderização limpa mesmo quando o banco de dados estiver vazio.
+
+#### Executando localmente:
 
 ```bash
-PYTHONPATH=. ./venv/bin/pytest tests/
+PYTHONPATH=. ./venv/bin/pytest tests/ -v
 ```
+
+#### Pipeline de Integração Contínua (GitHub Actions):
+
+A cada `git push` ou *Pull Request* enviado para a branch `main`, o GitHub Actions dispara automaticamente a pipeline configurada em `.github/workflows/ci.yml`. Os testes são executados em um ambiente Ubuntu isolado para garantir que nenhuma alteração quebre o sistema.
 
 ---
 
@@ -79,20 +101,26 @@ PYTHONPATH=. ./venv/bin/pytest tests/
 ```text
 /tarefas_diarias
  │
- ├── kanban_semanal.py      # Servidor Backend (Flask), rotas de API e conexões SQLite
- ├── kanban.db              # Banco de dados SQLite contendo todas as tabelas (tasks, subtasks, notices, logins)
- ├── historico.txt          # Log de auditoria e arquivamento das tarefas concluídas
- ├── start_kanban.sh        # Script shell para autostart rápido
- ├── README.md              # Este manual de documentação
+ ├── .github/
+ │    └── workflows/
+ │         └── ci.yml           # Pipeline de automação de testes do GitHub Actions
+ │
+ ├── kanban_semanal.py          # Servidor Backend (Flask), rotas de API e conexões SQLite
+ ├── kanban.db                  # Banco de dados SQLite contendo todas as tabelas
+ ├── requirements.txt           # Dependências do projeto (Flask, pytest, beautifulsoup4)
+ ├── historico.txt              # Log de auditoria e arquivamento das tarefas concluídas
+ ├── start_kanban.sh            # Script shell para autostart rápido
+ ├── README.md                  # Este manual de documentação
  │
  ├── /templates
- │    └── index.html        # Frontend da interface de usuário interativa (Kanban + Avisos)
+ │    └── index.html            # Frontend da interface de usuário interativa (Kanban + Avisos)
  │
  ├── /tests
- │    └── test_kanban.py    # Testes unitários e de integração de rotas e banco
+ │    ├── test_kanban.py        # Testes de backend, rotas e banco SQLite
+ │    └── test_frontend.py      # Testes de integridade da UI, modais e layout
  │
  └── /specs
-      └── [Especs].md       # Especificações de requisitos escritas durante o processo de evolução do projeto
+      └── [Especs].md           # Especificações de requisitos e evolução do projeto
 ```
 
 ---
