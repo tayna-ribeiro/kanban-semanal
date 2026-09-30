@@ -1,5 +1,6 @@
 # Ignorar todos os arquivos de texto (pois contêm tarefas, nomes de clientes, logins ou anotações pessoais da empresa)
 *.txt
+!requirements.txt
 
 # Se futuramente você quiser subir um arquivo de exemplo sem dados reais, remova o '#' da linha abaixo:
 # !tarefasDiarias-exemplo.txt
@@ -7,11 +8,12 @@
 # Cache do web scraper
 mensagem_cache.json
 
-# Pastas e arquivos de cache nativos do Python
+# Pastas e arquivos de cache nativos do Python e testes
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.pytest_cache/
 
 # Ambientes virtuais (caso venha a criar um futuramente)
 venv/

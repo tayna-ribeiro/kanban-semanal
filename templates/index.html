@@ -88,8 +88,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
         }
 
         .notice-toggle-bar .toggle-arrow {
@@ -107,7 +114,7 @@
             border-radius: 0 0 12px 12px;
             padding: 16px 20px 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 14px;
             overflow: hidden;
             max-height: 600px;
@@ -346,9 +353,17 @@
             cursor: grabbing;
         }
 
-        .task-card.INTO { border-left-color: var(--into-color); }
-        .task-card.JBRJ { border-left-color: var(--jbrj-color); }
-        .task-card.PESSOAL { border-left-color: #ec4899; }
+        .task-card.INTO {
+            border-left-color: var(--into-color);
+        }
+
+        .task-card.JBRJ {
+            border-left-color: var(--jbrj-color);
+        }
+
+        .task-card.PESSOAL {
+            border-left-color: #ec4899;
+        }
 
         .task-badge {
             font-size: 11px;
@@ -362,10 +377,25 @@
             margin-right: 4px;
         }
 
-        .badge-INTO { background: #e0f2fe; color: #0284c7; }
-        .badge-JBRJ { background: #dcfce3; color: #166534; }
-        .badge-PESSOAL { background: #fce7f3; color: #db2777; }
-        .badge-OUTROS { background: #f1f5f9; color: #475569; }
+        .badge-INTO {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-JBRJ {
+            background: #dcfce3;
+            color: #166534;
+        }
+
+        .badge-PESSOAL {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        .badge-OUTROS {
+            background: #f1f5f9;
+            color: #475569;
+        }
 
         .task-type {
             font-size: 11px;
@@ -486,14 +516,19 @@
             transition: opacity 0.2s, color 0.2s;
             z-index: 10;
         }
-        
+
         .task-card:hover .btn-delete-card,
         .task-card:hover .btn-edit-card {
             opacity: 1;
         }
-        
-        .btn-delete-card:hover { color: #ef4444; }
-        .btn-edit-card:hover { color: #6366f1; }
+
+        .btn-delete-card:hover {
+            color: #ef4444;
+        }
+
+        .btn-edit-card:hover {
+            color: #6366f1;
+        }
 
         .btn-delete-notice {
             background: none;
@@ -506,11 +541,11 @@
             opacity: 0;
             transition: opacity 0.2s, background-color 0.2s, color 0.2s;
         }
-        
+
         .notice-item:hover .btn-delete-notice {
             opacity: 1;
         }
-        
+
         .btn-delete-notice:hover {
             background-color: rgba(239, 68, 68, 0.2);
             color: #ef4444;
@@ -527,12 +562,12 @@
             background: #ffffff;
             font-family: inherit;
         }
-        
+
         dialog::backdrop {
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
         }
-        
+
         .dialog-header {
             display: flex;
             justify-content: space-between;
@@ -541,14 +576,14 @@
             border-bottom: 1px solid var(--border);
             padding-bottom: 12px;
         }
-        
+
         .dialog-header h3 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
             color: var(--text);
         }
-        
+
         .btn-close-dialog {
             background: none;
             border: none;
@@ -557,15 +592,15 @@
             color: #64748b;
             line-height: 1;
         }
-        
+
         .btn-close-dialog:hover {
             color: #ef4444;
         }
-        
+
         .form-group {
             margin-bottom: 16px;
         }
-        
+
         .form-group label {
             display: block;
             font-size: 13px;
@@ -573,7 +608,7 @@
             margin-bottom: 6px;
             color: #475569;
         }
-        
+
         .form-control {
             width: 100%;
             padding: 10px 12px;
@@ -586,12 +621,12 @@
             transition: border-color 0.2s;
             box-sizing: border-box;
         }
-        
+
         .form-control:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
-        
+
         .btn-primary {
             background: #6366f1;
             color: #ffffff;
@@ -603,11 +638,11 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .btn-primary:hover {
             background: #4f46e5;
         }
-        
+
         .btn-secondary {
             background: #f1f5f9;
             color: #475569;
@@ -619,11 +654,11 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .btn-secondary:hover {
             background: #e2e8f0;
         }
-        
+
         .dialog-footer {
             display: flex;
             justify-content: flex-end;
@@ -632,14 +667,14 @@
             border-top: 1px solid var(--border);
             padding-top: 16px;
         }
-        
+
         .tabs-header {
             display: flex;
             border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
             gap: 15px;
         }
-        
+
         .tab-btn {
             background: none;
             border: none;
@@ -651,7 +686,7 @@
             color: #64748b;
             transition: all 0.2s;
         }
-        
+
         .tab-btn.active {
             color: #6366f1;
             border-bottom-color: #6366f1;
@@ -686,9 +721,11 @@
                 </div>
                 <div class="notice-card-body">
                     {% for item in section['items'] %}
-                    <div class="notice-item" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="notice-item"
+                        style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="flex-grow: 1;">{{ item.text }}</span>
-                        <button class="btn-delete-notice" onclick="deleteNotice({{ item.line_idx }})" title="Excluir prazo/lembrete">✕</button>
+                        <button class="btn-delete-notice" onclick="deleteNotice({{ item.line_idx }})"
+                            title="Excluir prazo/lembrete">✕</button>
                     </div>
                     {% endfor %}
                 </div>
@@ -743,8 +780,10 @@
                 {% for task in tasks if task.status == 'todo' %}
                 <div class="task-card {{ task.contract }}" data-id="{{ task.id }}" data-contract="{{ task.contract }}"
                     data-type="{{ task.type }}">
-                    <button class="btn-delete-card" onclick="deleteTask({{ task.id }})" title="Excluir tarefa">✕</button>
-                    <button class="btn-edit-card" onclick="openEditModal({{ task.id }})" title="Editar tarefa">✏️</button>
+                    <button class="btn-delete-card" onclick="deleteTask({{ task.id }})"
+                        title="Excluir tarefa">✕</button>
+                    <button class="btn-edit-card" onclick="openEditModal({{ task.id }})"
+                        title="Editar tarefa">✏️</button>
                     <div>
                         <span class="task-badge badge-{{ task.contract }}">
                             {% if task.contract == 'INTO' %}
@@ -760,18 +799,22 @@
                         <span class="task-type">{{ task.type }}</span>
                     </div>
                     <div class="task-text">{{ task.text }}</div>
-                    
+
                     {% if task.description %}
-                    <div style="font-size: 12px; color: #64748b; margin-top: 6px; white-space: pre-wrap;">{{ task.description }}</div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 6px; white-space: pre-wrap;">{{
+                        task.description }}</div>
                     {% endif %}
 
                     {% if task.start_date or task.end_date %}
-                    <div style="font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                    <div
+                        style="font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
                         <span>📅</span>
                         <span>
-                            {% if task.start_date %}{{ task.start_date.split('-')[2] }}/{{ task.start_date.split('-')[1] }}{% endif %}
+                            {% if task.start_date %}{{ task.start_date.split('-')[2] }}/{{ task.start_date.split('-')[1]
+                            }}{% endif %}
                             {% if task.start_date and task.end_date %} a {% endif %}
-                            {% if task.end_date %}{{ task.end_date.split('-')[2] }}/{{ task.end_date.split('-')[1] }}{% endif %}
+                            {% if task.end_date %}{{ task.end_date.split('-')[2] }}/{{ task.end_date.split('-')[1] }}{%
+                            endif %}
                         </span>
                     </div>
                     {% endif %}
@@ -799,8 +842,10 @@
                 {% for task in tasks if task.status == 'doing' %}
                 <div class="task-card {{ task.contract }}" data-id="{{ task.id }}" data-contract="{{ task.contract }}"
                     data-type="{{ task.type }}">
-                    <button class="btn-delete-card" onclick="deleteTask({{ task.id }})" title="Excluir tarefa">✕</button>
-                    <button class="btn-edit-card" onclick="openEditModal({{ task.id }})" title="Editar tarefa">✏️</button>
+                    <button class="btn-delete-card" onclick="deleteTask({{ task.id }})"
+                        title="Excluir tarefa">✕</button>
+                    <button class="btn-edit-card" onclick="openEditModal({{ task.id }})"
+                        title="Editar tarefa">✏️</button>
                     <div>
                         <span class="task-badge badge-{{ task.contract }}">
                             {% if task.contract == 'INTO' %}
@@ -816,18 +861,22 @@
                         <span class="task-type">{{ task.type }}</span>
                     </div>
                     <div class="task-text">{{ task.text }}</div>
-                    
+
                     {% if task.description %}
-                    <div style="font-size: 12px; color: #64748b; margin-top: 6px; white-space: pre-wrap;">{{ task.description }}</div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 6px; white-space: pre-wrap;">{{
+                        task.description }}</div>
                     {% endif %}
 
                     {% if task.start_date or task.end_date %}
-                    <div style="font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                    <div
+                        style="font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
                         <span>📅</span>
                         <span>
-                            {% if task.start_date %}{{ task.start_date.split('-')[2] }}/{{ task.start_date.split('-')[1] }}{% endif %}
+                            {% if task.start_date %}{{ task.start_date.split('-')[2] }}/{{ task.start_date.split('-')[1]
+                            }}{% endif %}
                             {% if task.start_date and task.end_date %} a {% endif %}
-                            {% if task.end_date %}{{ task.end_date.split('-')[2] }}/{{ task.end_date.split('-')[1] }}{% endif %}
+                            {% if task.end_date %}{{ task.end_date.split('-')[2] }}/{{ task.end_date.split('-')[1] }}{%
+                            endif %}
                         </span>
                     </div>
                     {% endif %}
@@ -1030,7 +1079,7 @@
             try {
                 const response = await fetch('/api/logins');
                 const logins = await response.json();
-                
+
                 list.innerHTML = '';
                 if (logins.length === 0) {
                     list.innerHTML = '<div style="color: #64748b; font-size: 11.5px; padding: 4px 0;">Nenhum login salvo. Adicione abaixo!</div>';
@@ -1180,12 +1229,12 @@
                 const end_date = document.getElementById('taskEndDate').value;
                 const subtask_title = document.getElementById('taskSubtaskTitle').value.trim();
                 const subtasks_text = document.getElementById('taskSubtasksText').value;
-                
+
                 if (!title) {
                     showToast('Título é obrigatório!', true);
                     return;
                 }
-                
+
                 payload = {
                     item_type: 'task',
                     title: title,
@@ -1200,26 +1249,26 @@
             } else {
                 const section = document.getElementById('noticeSection').value;
                 const text = document.getElementById('noticeText').value.trim();
-                
+
                 if (!text) {
                     showToast('Preencha o aviso!', true);
                     return;
                 }
-                
+
                 payload = {
                     item_type: 'notice',
                     section: section,
                     text: text
                 };
             }
-            
+
             try {
                 const response = await fetch('/add_item', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
+
                 const data = await response.json();
                 if (data.success) {
                     showToast('Item adicionado com sucesso!');
@@ -1291,12 +1340,12 @@
             try {
                 const response = await fetch(`/api/task/${taskId}`);
                 const task = await response.json();
-                
+
                 if (task.error) {
                     showToast('Erro ao buscar dados: ' + task.error, true);
                     return;
                 }
-                
+
                 document.getElementById('editTaskId').value = task.id;
                 document.getElementById('editTaskTitle').value = task.title;
                 document.getElementById('editTaskDescription').value = task.description;
@@ -1305,7 +1354,7 @@
                 document.getElementById('editTaskStartDate').value = task.start_date;
                 document.getElementById('editTaskEndDate').value = task.end_date;
                 document.getElementById('editTaskSubtaskTitle').value = task.subtask_title;
-                
+
                 let subtasksText = '';
                 if (task.subtasks && task.subtasks.length > 0) {
                     subtasksText = task.subtasks.map(st => {
@@ -1313,7 +1362,7 @@
                     }).join('\n');
                 }
                 document.getElementById('editTaskSubtasksText').value = subtasksText;
-                
+
                 document.getElementById('editDialog').showModal();
             } catch (err) {
                 console.error(err);
@@ -1331,12 +1380,12 @@
             const end_date = document.getElementById('editTaskEndDate').value;
             const subtask_title = document.getElementById('editTaskSubtaskTitle').value.trim();
             const subtasks_text = document.getElementById('editTaskSubtasksText').value;
-            
+
             if (!title) {
                 showToast('Título é obrigatório!', true);
                 return;
             }
-            
+
             const payload = {
                 id: parseInt(id),
                 title,
@@ -1348,7 +1397,7 @@
                 subtask_title,
                 subtasks_text
             };
-            
+
             try {
                 const response = await fetch('/edit_task', {
                     method: 'POST',
@@ -1409,12 +1458,12 @@
             <h3 id="dialogTitle">Adicionar Novo Item</h3>
             <button class="btn-close-dialog" onclick="document.getElementById('addDialog').close()">✕</button>
         </div>
-        
+
         <div class="tabs-header">
             <button class="tab-btn active" id="tabTask" onclick="switchTab('task')">📋 Nova Tarefa (Kanban)</button>
             <button class="tab-btn" id="tabNotice" onclick="switchTab('notice')">📌 Prazo ou Lembrete</button>
         </div>
-        
+
         <!-- Formulário para Tarefas -->
         <div id="formTaskSection">
             <div class="form-group">
@@ -1443,7 +1492,8 @@
             </div>
             <div class="form-group">
                 <label for="taskDescription">Descrição Detalhada</label>
-                <textarea id="taskDescription" class="form-control" rows="2" placeholder="Notas ou observações adicionais..."></textarea>
+                <textarea id="taskDescription" class="form-control" rows="2"
+                    placeholder="Notas ou observações adicionais..."></textarea>
             </div>
             <div style="display: flex; gap: 10px;">
                 <div class="form-group" style="flex: 1;">
@@ -1461,10 +1511,11 @@
             </div>
             <div class="form-group">
                 <label for="taskSubtasksText">Subtarefas (uma por linha)</label>
-                <textarea id="taskSubtasksText" class="form-control" rows="4" placeholder="* Subtarefa 1&#10;* Subtarefa 2 - OK"></textarea>
+                <textarea id="taskSubtasksText" class="form-control" rows="4"
+                    placeholder="* Subtarefa 1&#10;* Subtarefa 2 - OK"></textarea>
             </div>
         </div>
-        
+
         <!-- Formulário para Prazos / Avisos -->
         <div id="formNoticeSection" style="display: none;">
             <div class="form-group">
@@ -1478,10 +1529,11 @@
             </div>
             <div class="form-group">
                 <label for="noticeText">Texto do Aviso (ex: Atualizar Manual - Prazo: 14/08/2026)</label>
-                <textarea id="noticeText" class="form-control" rows="3" placeholder="Escreva o recado ou prazo aqui..."></textarea>
+                <textarea id="noticeText" class="form-control" rows="3"
+                    placeholder="Escreva o recado ou prazo aqui..."></textarea>
             </div>
         </div>
-        
+
         <div class="dialog-footer">
             <button class="btn-secondary" onclick="document.getElementById('addDialog').close()">Cancelar</button>
             <button class="btn-primary" onclick="submitNewItem()">Salvar</button>
@@ -1494,9 +1546,9 @@
             <h3 id="editDialogTitle">Editar Tarefa</h3>
             <button class="btn-close-dialog" onclick="document.getElementById('editDialog').close()">✕</button>
         </div>
-        
+
         <input type="hidden" id="editTaskId">
-        
+
         <div class="form-group">
             <label for="editTaskTitle">Título da Tarefa</label>
             <input type="text" id="editTaskTitle" class="form-control" placeholder="Título">
@@ -1523,7 +1575,8 @@
         </div>
         <div class="form-group">
             <label for="editTaskDescription">Descrição Detalhada</label>
-            <textarea id="editTaskDescription" class="form-control" rows="2" placeholder="Notas ou observações adicionais..."></textarea>
+            <textarea id="editTaskDescription" class="form-control" rows="2"
+                placeholder="Notas ou observações adicionais..."></textarea>
         </div>
         <div style="display: flex; gap: 10px;">
             <div class="form-group" style="flex: 1;">
@@ -1541,9 +1594,10 @@
         </div>
         <div class="form-group">
             <label for="editTaskSubtasksText">Subtarefas (uma por linha)</label>
-            <textarea id="editTaskSubtasksText" class="form-control" rows="4" placeholder="* Subtarefa 1&#10;* Subtarefa 2 - OK"></textarea>
+            <textarea id="editTaskSubtasksText" class="form-control" rows="4"
+                placeholder="* Subtarefa 1&#10;* Subtarefa 2 - OK"></textarea>
         </div>
-        
+
         <div class="dialog-footer">
             <button class="btn-secondary" onclick="document.getElementById('editDialog').close()">Cancelar</button>
             <button class="btn-primary" onclick="saveTaskEdit()">Salvar Alterações</button>

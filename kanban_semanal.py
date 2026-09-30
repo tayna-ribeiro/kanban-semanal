@@ -7,6 +7,7 @@ from datetime import datetime, date
 from flask import Flask, render_template, request, jsonify, abort
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True  # <- Sempre relê os arquivos HTML
 
 DATABASE = 'kanban.db'
 TASKS_FILE = 'tarefasDiarias.txt'
